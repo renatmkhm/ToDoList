@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using ToDoListApi.Data;
 using ToDoListApi.Models;
 
 namespace ToDoListApi.Controllers
@@ -8,42 +11,93 @@ namespace ToDoListApi.Controllers
     [Route("[controller]")]
     public class ToDoItemsController : ControllerBase
     {
+        private readonly ApplicationDbContext _context;
+
+        public ToDoItemsController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        // GET: /ToDoItems
         [HttpGet]
-        public ActionResult<IEnumerable<ToDoItem>> Get()
+        public async Task<ActionResult<IEnumerable<ToDoItem>>> GetToDoItems()
         {
-            return Ok(DataStore.ToDoItems);
+            return await _context.ToDoItems.ToListAsync();
         }
 
+        // GET: /ToDoItems/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ToDoItem>> GetToDoItem(int id)
+        {
+            var toDoItem = await _context.ToDoItems.FindAsync(id);
+
+            if (toDoItem == null)
+            {
+                return NotFound();
+            }
+
+            return toDoItem;
+        }
+
+        // POST: /ToDoItems
         [HttpPost]
-        public ActionResult<ToDoItem> Post([FromBody] ToDoItem item)
+        public async Task<ActionResult<ToDoItem>> PostToDoItem(ToDoItem toDoItem)
         {
-            item.Id = DataStore.ToDoItems.Count + 1;
-            DataStore.ToDoItems.Add(item);
-            return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
+            _context.ToDoItems.Add(toDoItem);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetToDoItem), new { id = toDoItem.Id }, toDoItem);
         }
 
+        // PUT: /ToDoItems/5
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] ToDoItem item)
+        public async Task<IActionResult> PutToDoItem(int id, ToDoItem toDoItem)
         {
-            var index = DataStore.ToDoItems.FindIndex(existingItem => existingItem.Id == id);
-            if (index < 0)
+            if (id != toDoItem.Id)
             {
-                return NotFound();
+                return BadRequest();
             }
-            DataStore.ToDoItems[index] = item;
+
+            _context.Entry(toDoItem).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ToDoItemExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
             return NoContent();
         }
 
+        // DELETE: /ToDoItems/5
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> DeleteToDoItem(int id)
         {
-            var item = DataStore.ToDoItems.Find(existingItem => existingItem.Id == id);
-            if (item == null)
+            var toDoItem = await _context.ToDoItems.FindAsync(id);
+            if (toDoItem == null)
             {
                 return NotFound();
             }
-            DataStore.ToDoItems.Remove(item);
+
+            _context.ToDoItems.Remove(toDoItem);
+            await _context.SaveChangesAsync();
+
             return NoContent();
+        }
+
+        private bool ToDoItemExists(int id)
+        {
+            return _context.ToDoItems.Any(e => e.Id == id);
         }
     }
 }
