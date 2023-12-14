@@ -1,0 +1,25 @@
+﻿@page
+@model ToDoList.Pages.ToDoItems.IndexModel
+@{
+    ViewData["Title"] = "ToDo List";
+}
+
+<h1>ToDo List</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ToDoItems)
+        {
+            <tr>
+                <td>@item.description</td>
+                <td>@(item.isChecked ? "Completed" : "Pending")</td>
+            </tr>
+        }
+    </tbody>
+</table>
