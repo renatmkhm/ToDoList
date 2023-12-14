@@ -16,7 +16,7 @@ namespace ToDoList.Pages.ToDoItems
             _clientFactory = clientFactory;
         }
 
-        public IEnumerable<ToDoModel> ToDoItems { get; private set; }
+        public IEnumerable<ToDoModel> ToDoModel { get; private set; }
 
         public async Task OnGetAsync()
         {
@@ -28,11 +28,11 @@ namespace ToDoList.Pages.ToDoItems
             if (response.IsSuccessStatusCode)
             {
                 using var contentStream = await response.Content.ReadAsStreamAsync();
-                ToDoItems = await JsonSerializer.DeserializeAsync<IEnumerable<ToDoModel>>(contentStream);
+                ToDoModel = await JsonSerializer.DeserializeAsync<IEnumerable<ToDoModel>>(contentStream);
             }
             else
             {
-                ToDoItems = Array.Empty<ToDoModel>();
+                ToDoModel = Array.Empty<ToDoModel>();
             }
         }
     }

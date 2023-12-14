@@ -6,19 +6,26 @@
 
 <h1>ToDo List</h1>
 
+<a asp-page="./Create" class="btn btn-success">Create New</a>
+
 <table class="table">
     <thead>
         <tr>
             <th>Description</th>
             <th>Status</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.ToDoItems)
+        @foreach (var item in Model.ToDoModel)
         {
             <tr>
                 <td>@item.description</td>
                 <td>@(item.isChecked ? "Completed" : "Pending")</td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.id" class="btn btn-primary">Edit</a>
+                    <a asp-page="./Delete" asp-route-id="@item.id" class="btn btn-danger">Delete</a> 
+                </td>
             </tr>
         }
     </tbody>

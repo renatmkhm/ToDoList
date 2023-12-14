@@ -1,0 +1,20 @@
+﻿@page
+@model ToDoList.Pages.ToDoItems.CreateModel
+@{
+    ViewData["Title"] = "Create ToDo Item";
+}
+
+<h1>Create ToDo Item</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="ToDoModel.description" class="control-label"></label>
+        <input asp-for="ToDoModel.description" class="form-control" />
+        <span asp-validation-for="ToDoModel.description" class="text-danger"></span>
+    </div>
+    <div class="form-group form-check">
+        <input asp-for="ToDoModel.isChecked" class="form-check-input" />
+        <label asp-for="ToDoModel.isChecked" class="form-check-label">Completed</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
