@@ -8,7 +8,7 @@ using ToDoListApi.Models;
 namespace ToDoListApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ToDoItemsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -18,14 +18,14 @@ namespace ToDoListApi.Controllers
             _context = context;
         }
 
-        // GET: /ToDoItems
+        // GET: /api/ToDoItems
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ToDoItem>>> GetToDoItems()
         {
             return await _context.ToDoItems.ToListAsync();
         }
 
-        // GET: /ToDoItems/{id}
+        // GET: /api/ToDoItems/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<ToDoItem>> GetToDoItem(int id)
         {
@@ -39,7 +39,7 @@ namespace ToDoListApi.Controllers
             return toDoItem;
         }
 
-        // POST: /ToDoItems
+        // POST: /api/ToDoItems
         [HttpPost]
         public async Task<ActionResult<ToDoItem>> PostToDoItem(ToDoItem toDoItem)
         {
@@ -49,7 +49,7 @@ namespace ToDoListApi.Controllers
             return CreatedAtAction(nameof(GetToDoItem), new { id = toDoItem.Id }, toDoItem);
         }
 
-        // PUT: /ToDoItems/{id}
+        // PUT: /api/ToDoItems/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> PutToDoItem(int id, ToDoItem toDoItem)
         {
@@ -79,7 +79,7 @@ namespace ToDoListApi.Controllers
             return NoContent();
         }
 
-        // DELETE: /ToDoItems/{id}
+        // DELETE: /api/ToDoItems/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteToDoItem(int id)
         {
